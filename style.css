@@ -8,7 +8,7 @@ h1 {
 }
 body {
   text-align: center;
-  background-color: #548687;
+  background-color: black;
 }
 .main {
   height: 70vh;
@@ -26,7 +26,7 @@ body {
   gap: 1.5vmin;
 }
 .but {
-  background-color: yellow;
+  background-color: #7494ea;
   height: 18vmin;
   width: 18vmin;
   border-radius: 5%;
@@ -35,14 +35,8 @@ body {
   align-items: center;
   box-shadow: 0 0 1rem rgba(0, 0, 0, 0.3);
   font-size: 8vmin;
-  color: #b0413e;
-}
-.reset {
-  background-color: black;
-  color: white;
-  height: 40px;
-  width: 100px;
-  border-radius: 8%;
+  color: aqua;
+  cursor: not-allowed;
 }
 .msg {
   height: 4vmin;
@@ -51,6 +45,7 @@ body {
   align-items: center;
   flex-direction: column;
   gap: 2rem;
+  margin-bottom: 20px;
 }
 .hide {
   display: none;
@@ -58,4 +53,16 @@ body {
 .win {
   color: #fffc7f;
   font-size: 4vmin;
+}
+.game-mode {
+  margin-bottom: 20px;
+}
+.mode {
+  background-color: aqua;
+  color: white;
+  height: 40px;
+  width: 100px;
+  border-radius: 8%;
+  margin: 0 10px;
+  cursor: pointer;
 }
