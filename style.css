@@ -5,6 +5,7 @@
 h1 {
   color: aqua;
   margin-bottom: 50px;
+  margin-top:2%;
 }
 body {
   text-align: center;
@@ -60,6 +61,7 @@ body {
 .mode {
   background-color: aqua;
   color:black;
+  margin-bottom:1%;
   height: 40px;
   width: 100px;
   border-radius: 8%;
