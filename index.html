@@ -8,23 +8,28 @@
   </head>
   <body>
     <h1>TIC TAC TOE</h1>
+    <div class="game-mode">
+      <button class="mode" data-mode="2-players">2 Players</button>
+      <button class="mode" data-mode="easy-bot">Vs Easy Bot</button>
+      <button class="mode" data-mode="difficult-bot">Vs Difficult Bot</button>
+      <button class="mode" data-mode="expert-bot">Vs Expert Bot</button>
+    </div>
     <div class="msg hide">
       <p class="win">Winner</p>
     </div>
     <div class="main">
       <div class="box">
-        <div class="but"></div>
-        <div class="but"></div>
-        <div class="but"></div>
-        <div class="but"></div>
-        <div class="but"></div>
-        <div class="but"></div>
-        <div class="but"></div>
-        <div class="but"></div>
-        <div class="but"></div>
+        <div class="but" disabled></div>
+        <div class="but" disabled></div>
+        <div class="but" disabled></div>
+        <div class="but" disabled></div>
+        <div class="but" disabled></div>
+        <div class="but" disabled></div>
+        <div class="but" disabled></div>
+        <div class="but" disabled></div>
+        <div class="but" disabled></div>
       </div>
     </div>
-    <button class="reset">Restart</button>
+    <script src="script.js"></script>
   </body>
-  <script src="script.js"></script>
 </html>
