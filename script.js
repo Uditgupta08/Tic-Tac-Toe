@@ -1,9 +1,12 @@
 let boxes = document.querySelectorAll(".but");
-let reset = document.querySelector(".reset");
-let turn0 = true;
 let msgcont = document.querySelector(".msg");
 let message = document.querySelector(".win");
+let gameMode = null;
+let userTurn = true;
 let winnerFound = false;
+let turn0 = true;
+let firstUserMove = null;
+let botFirstMove = true;
 
 const winPatterns = [
   [0, 1, 2],
@@ -16,35 +19,134 @@ const winPatterns = [
   [6, 7, 8],
 ];
 
-boxes.forEach((but) => {
-  but.addEventListener("click", () => {
-    if (but.disabled || winnerFound) {
-      return;
-    }
+const getRandomMove = () => {
+  const availableBoxes = Array.from(boxes).filter((box) => !box.innerText);
+  return availableBoxes.length
+    ? availableBoxes[Math.floor(Math.random() * availableBoxes.length)]
+    : null;
+};
 
-    if (turn0) {
-      but.innerText = "0";
-      turn0 = false;
-    } else {
-      but.innerText = "X";
-      turn0 = true;
+const getDifficultMove = () => {
+  for (const pattern of winPatterns) {
+    const [a, b, c] = pattern;
+    const values = [boxes[a].innerText, boxes[b].innerText, boxes[c].innerText];
+    const countX = values.filter((val) => val === "X").length;
+    const countO = values.filter((val) => val === "0").length;
+
+    if (countX === 2 || countO === 2) {
+      const emptyIndex = values.findIndex((val) => val === "");
+      if (emptyIndex !== -1) {
+        return boxes[pattern[emptyIndex]];
+      }
     }
-    but.disabled = true;
+  }
+
+  if (firstUserMove === 4) {
+    const corners = [0, 2, 6, 8];
+    for (let corner of corners) {
+      if (!boxes[corner].innerText) {
+        return boxes[corner];
+      }
+    }
+  }
+
+  return getRandomMove();
+};
+
+const getExpertMove = () => {
+  for (const pattern of winPatterns) {
+    const [a, b, c] = pattern;
+    const values = [boxes[a].innerText, boxes[b].innerText, boxes[c].innerText];
+    const countX = values.filter((val) => val === "X").length;
+    const countO = values.filter((val) => val === "0").length;
+
+    if (countX === 2 || countO === 2) {
+      const emptyIndex = values.findIndex((val) => val === "");
+      if (emptyIndex !== -1) {
+        return boxes[pattern[emptyIndex]];
+      }
+    }
+  }
+
+  if (botFirstMove && firstUserMove !== 4) {
+    botFirstMove = false;
+    return boxes[4];
+  }
+
+  if (firstUserMove === 4) {
+    const corners = [0, 2, 6, 8];
+    for (let corner of corners) {
+      if (!boxes[corner].innerText) {
+        return boxes[corner];
+      }
+    }
+  }
+
+  return getRandomMove();
+};
+
+const botMove = () => {
+  let move = null;
+
+  if (gameMode === "easy-bot") {
+    move = getRandomMove();
+  } else if (gameMode === "difficult-bot") {
+    move = getDifficultMove();
+  } else if (gameMode === "expert-bot") {
+    move = getExpertMove();
+  }
+
+  if (move) {
+    move.innerText = turn0 ? "0" : "X";
+    move.disabled = true;
+    turn0 = !turn0;
     checkWinner();
     draw();
-  });
+    userTurn = true; 
+    enableBoxes();
+  }
+};
+
+const handleBoxClick = (but) => {
+  if (but.disabled || winnerFound || !userTurn) return;
+
+  but.innerText = turn0 ? "0" : "X";
+  but.disabled = true;
+  turn0 = !turn0;
+  if (firstUserMove === null) {
+    firstUserMove = Array.from(boxes).indexOf(but);
+  }
+  checkWinner();
+  draw();
+
+  if (
+    !winnerFound &&
+    (gameMode === "easy-bot" ||
+      gameMode === "difficult-bot" ||
+      gameMode === "expert-bot")
+  ) {
+    userTurn = false; 
+    setTimeout(botMove, 500);
+  }
+};
+
+boxes.forEach((but) => {
+  but.addEventListener("click", () => handleBoxClick(but));
 });
 
 const disableBoxes = () => {
   boxes.forEach((box) => {
     box.disabled = true;
+    box.style.cursor = "not-allowed";
   });
 };
 
 const enableBoxes = () => {
   boxes.forEach((box) => {
-    box.disabled = false;
-    box.innerText = "";
+    if (!box.innerText) {
+      box.disabled = false;
+      box.style.cursor = "pointer";
+    }
   });
 };
 
@@ -85,8 +187,21 @@ const checkWinner = () => {
 const resetGame = () => {
   turn0 = true;
   winnerFound = false;
+  userTurn = true;
+  firstUserMove = null;
+  botFirstMove = true;
   enableBoxes();
   msgcont.classList.add("hide");
+  boxes.forEach((box) => {
+    box.innerText = "";
+    box.disabled = false;
+    box.style.cursor = "pointer";
+  });
 };
 
-reset.addEventListener("click", resetGame);
+document.querySelectorAll(".mode").forEach((button) => {
+  button.addEventListener("click", (event) => {
+    gameMode = event.target.dataset.mode;
+    resetGame();
+  });
+});
